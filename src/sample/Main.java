@@ -23,6 +23,8 @@ public class Main extends Application {
     private Group titleGroup = new Group();
     private Group pieceGroup = new Group();
 
+    private PieceType previousTurn = PieceType.RED;
+
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(width * titleSize, height * titleSize);
@@ -111,6 +113,8 @@ public class Main extends Application {
 
 
 
+
+
     public boolean kingCondition(Piece piece) {
         if(piece.getType() == PieceType.RED && piece.getLayoutY()==7*titleSize) {
             return true;
@@ -123,30 +127,32 @@ public class Main extends Application {
 
 
 
-    private MoveResult tryMove(Piece piece, int newX, int newY) {
+    private MoveResult tryMove(Piece piece, int newX, int newY, PieceType turn, MoveType previousMove) {
 
 
 
 
-        if (board[newX][newY].hasPiece() || (newX + newY)%2 == 0) {
-            return new MoveResult(MoveType.NONE);
-        }
-        int x0 = toBoard(piece.getOldX());
-        int y0 = toBoard(piece.getOldY());
-
-        if(Math.abs(newX - x0) == 1 && newY - y0 == piece.getType().moveDir ||
-                (Math.abs(newX - x0) == 1 && piece.isKing())) {
-            return new MoveResult(MoveType.NORMAL);
-        }
-        else if(Math.abs(newX - x0) == 2 && newY - y0 == piece.getType().moveDir * 2 ||
-                (Math.abs(newX - x0) == 2 && piece.isKing())) {
-            int x1 = x0 + (newX - x0) / 2;
-            int y1 = y0 + (newY - y0) / 2;
-
-            if(board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                return  new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+            if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0) {
+                return new MoveResult(MoveType.NONE);
             }
-        }
+            int x0 = toBoard(piece.getOldX());
+            int y0 = toBoard(piece.getOldY());
+
+            if (Math.abs(newX - x0) == 1 && newY - y0 == piece.getType().moveDir ||
+                    (Math.abs(newX - x0) == 1 && piece.isKing())) {
+                if(piece.getType() == turn)
+                    return new MoveResult(MoveType.NORMAL);
+            } else if (Math.abs(newX - x0) == 2 && newY - y0 == piece.getType().moveDir * 2 ||
+                    (Math.abs(newX - x0) == 2 && piece.isKing())) {
+                int x1 = x0 + (newX - x0) / 2;
+                int y1 = y0 + (newY - y0) / 2;
+
+                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                    if (piece.getType() == turn || previousMove == MoveType.KILL)
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                }
+            }
+
         return new MoveResult(MoveType.NONE);
     }
 
@@ -171,7 +177,7 @@ public class Main extends Application {
             int newX = toBoard(piece.getLayoutX());
             int newY = toBoard(piece.getLayoutY());
 
-            MoveResult result = tryMove(piece, newX, newY);
+            MoveResult result = tryMove(piece, newX, newY, previousTurn, piece.getPrevMove());
 
             int x0 = toBoard(piece.getOldX());
             int y0 = toBoard(piece.getOldY());
@@ -180,6 +186,8 @@ public class Main extends Application {
             switch (result.getType()) {
                 case NONE:
                     piece.abortMove();
+                    piece.setPrevMove(MoveType.NONE);
+                    previousTurn = PieceType.other(piece.getType());
                     break;
 
                 case NORMAL:
@@ -189,6 +197,8 @@ public class Main extends Application {
                     if(kingCondition(piece)) {
                         piece.setKing();
                     }
+                    piece.setPrevMove(MoveType.NORMAL);
+                    previousTurn = PieceType.other(piece.getType());
                     break;
 
                 case KILL:
@@ -207,7 +217,8 @@ public class Main extends Application {
                     if(winCondition()) {
                         winner();
                     }
-
+                    piece.setPrevMove(MoveType.KILL);
+                    previousTurn = PieceType.other(piece.getType());
 
                     break;
             }

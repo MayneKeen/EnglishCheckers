@@ -10,6 +10,15 @@ import static sample.Main.titleSize;
 public class Piece extends StackPane {
 
     private boolean isKing;
+    private MoveType prevMove;
+
+    public void setPrevMove(MoveType prevMove) {
+        this.prevMove = prevMove;
+    }
+    public MoveType getPrevMove() {
+        return prevMove;
+    }
+
 
     public void setKing() {
         isKing = true;

@@ -8,4 +8,10 @@ public enum PieceType {
     PieceType(int moveDir) {
         this.moveDir = moveDir;
     }
+
+    public static PieceType other(PieceType a) {
+        if(a==PieceType.RED)
+            return PieceType.WHITE;
+        else return PieceType.RED;
+    }
 }
