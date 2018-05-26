@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.javafx.collections.ElementObservableListDecorator;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -7,6 +8,26 @@ import static sample.Main.titleSize;
 
 
 public class Piece extends StackPane {
+
+    private boolean isKing;
+
+    public void setKing() {
+        isKing = true;
+        Ellipse kingEllipse = new Ellipse(titleSize * 0.03125, titleSize * 0.026);
+
+        kingEllipse.setFill(type == PieceType.RED ?
+                Color.valueOf("#fff9f4") : Color.valueOf("#c40003"));
+
+
+        kingEllipse.setTranslateX((titleSize - titleSize * 0.3125 * 2) / 2);
+        kingEllipse.setTranslateY((titleSize - titleSize * 0.26 * 2) / 2);
+
+        getChildren().addAll(kingEllipse);
+    }
+
+    public boolean isKing() {
+        return isKing;
+    }
 
     private PieceType type;
 
@@ -52,6 +73,24 @@ public class Piece extends StackPane {
         ellipse.setTranslateY((titleSize - titleSize * 0.26 * 2) / 2);
 
         getChildren().addAll(bg, ellipse);
+
+        if(isKing()) {
+            Ellipse kingEllipse = new Ellipse(titleSize * 0.03125, titleSize * 0.026);
+
+            kingEllipse.setFill(type == PieceType.RED ?
+                    Color.valueOf("#fff9f4") : Color.valueOf("#c40003"));
+
+
+            kingEllipse.setTranslateX((titleSize - titleSize * 0.3125 * 2) / 2);
+            kingEllipse.setTranslateY((titleSize - titleSize * 0.26 * 2) / 2);
+
+            getChildren().add(kingEllipse);
+        }
+
+
+
+
+
 
 
         setOnMousePressed( e -> {

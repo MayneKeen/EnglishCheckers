@@ -1,5 +1,7 @@
 package sample;
 
+
+import javafx.scene.control.Alert;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -7,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
 
 public class Main extends Application {
 
@@ -55,17 +58,88 @@ public class Main extends Application {
     }
 
 
+    private boolean winCondition() {
+        boolean hasWhitePieces = false;
+        boolean hasRedPieces = false;
+        for(int i=0; i<width; i++) {
+            for(int j=0; j<height; j++) {
+                if(board[i][j].hasPiece()) {
+                    Piece piece = board[i][j].getPiece();
+                    if(piece.getType() == PieceType.RED) {
+                        hasRedPieces = true;
+                    }
+                    else {
+                        hasWhitePieces = true;
+                    }
+                }
+            }
+        }
+        if(hasRedPieces && hasWhitePieces)
+            return false;
+        return true;
+    }
+
+    private String winnerColor() {
+
+        boolean hasRedPieces = false;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (board[i][j].hasPiece()) {
+                    Piece piece = board[i][j].getPiece();
+                    if (piece.getType() == PieceType.RED)
+                        hasRedPieces = true;
+                    break;
+                }
+            }
+        }
+        if (hasRedPieces == true)
+            return "Red";
+        else return "White";
+    }
+
+
+    public void winner() {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+            alert.setTitle("Winner");
+            alert.setHeaderText(null);
+            alert.setContentText(winnerColor() + " player's victory!");
+            alert.showAndWait();
+            System.exit(1);
+
+    }
+
+
+
+    public boolean kingCondition(Piece piece) {
+        if(piece.getType() == PieceType.RED && piece.getLayoutY()==7*titleSize) {
+            return true;
+        }
+        if(piece.getType() == PieceType.WHITE && piece.getLayoutY()==0*titleSize) {     //
+            return true;
+        }
+        return false;
+    }
+
+
+
     private MoveResult tryMove(Piece piece, int newX, int newY) {
+
+
+
+
         if (board[newX][newY].hasPiece() || (newX + newY)%2 == 0) {
             return new MoveResult(MoveType.NONE);
         }
         int x0 = toBoard(piece.getOldX());
         int y0 = toBoard(piece.getOldY());
 
-        if(Math.abs(newX - x0) == 1 && newY - y0 == piece.getType().moveDir) {
-            return new MoveResult((MoveType.NORMAL));
+        if(Math.abs(newX - x0) == 1 && newY - y0 == piece.getType().moveDir ||
+                (Math.abs(newX - x0) == 1 && piece.isKing())) {
+            return new MoveResult(MoveType.NORMAL);
         }
-        else if(Math.abs(newX - x0) == 2 && newY - y0 == piece.getType().moveDir * 2) {
+        else if(Math.abs(newX - x0) == 2 && newY - y0 == piece.getType().moveDir * 2 ||
+                (Math.abs(newX - x0) == 2 && piece.isKing())) {
             int x1 = x0 + (newX - x0) / 2;
             int y1 = y0 + (newY - y0) / 2;
 
@@ -82,7 +156,7 @@ public class Main extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage){
         Scene scene = new Scene(createContent());
         primaryStage.setTitle("Checkers");
         primaryStage.setScene(scene);
@@ -112,6 +186,9 @@ public class Main extends Application {
                     piece.move(newX, newY);
                     board[x0][y0].setPiece(null);
                     board[newX][newY].setPiece(piece);
+                    if(kingCondition(piece)) {
+                        piece.setKing();
+                    }
                     break;
 
                 case KILL:
@@ -122,6 +199,15 @@ public class Main extends Application {
                     Piece otherPiece = result.getPiece();
                     board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                     pieceGroup.getChildren().remove(otherPiece);
+
+                    if(kingCondition(piece)) {
+                        piece.setKing();
+                    }
+
+                    if(winCondition()) {
+                        winner();
+                    }
+
 
                     break;
             }
@@ -136,7 +222,9 @@ public class Main extends Application {
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
+
         launch(args);
     }
 }
