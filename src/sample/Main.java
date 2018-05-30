@@ -23,7 +23,7 @@ public class Main extends Application {
     private Group titleGroup = new Group();
     private Group pieceGroup = new Group();
 
-    private PieceType previousTurn = PieceType.RED;
+    private PieceType turn = PieceType.RED;
 
     private Parent createContent() {
         Pane root = new Pane();
@@ -126,6 +126,17 @@ public class Main extends Application {
     }
 
 
+    private void changeTurn() {
+        turn = PieceType.other(turn);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        alert.setTitle("Next turn");
+        alert.setHeaderText(null);
+        alert.setContentText("Now it's the time for " + turn + " player's turn" );
+        alert.showAndWait();
+    }
+
+
 
     private MoveResult tryMove(Piece piece, int newX, int newY, PieceType turn, MoveType previousMove) {
 
@@ -177,7 +188,7 @@ public class Main extends Application {
             int newX = toBoard(piece.getLayoutX());
             int newY = toBoard(piece.getLayoutY());
 
-            MoveResult result = tryMove(piece, newX, newY, previousTurn, piece.getPrevMove());
+            MoveResult result = tryMove(piece, newX, newY, turn, piece.getPrevMove());
 
             int x0 = toBoard(piece.getOldX());
             int y0 = toBoard(piece.getOldY());
@@ -187,7 +198,9 @@ public class Main extends Application {
                 case NONE:
                     piece.abortMove();
                     piece.setPrevMove(MoveType.NONE);
-                    previousTurn = PieceType.other(piece.getType());
+                    
+                    //changeTurn();
+                    //turn = PieceType.other(piece.getType());
                     break;
 
                 case NORMAL:
@@ -198,7 +211,8 @@ public class Main extends Application {
                         piece.setKing();
                     }
                     piece.setPrevMove(MoveType.NORMAL);
-                    previousTurn = PieceType.other(piece.getType());
+                    changeTurn();
+                    //turn = PieceType.other(piece.getType());
                     break;
 
                 case KILL:
@@ -218,7 +232,8 @@ public class Main extends Application {
                         winner();
                     }
                     piece.setPrevMove(MoveType.KILL);
-                    previousTurn = PieceType.other(piece.getType());
+                    changeTurn();
+                    //turn = PieceType.other(piece.getType());
 
                     break;
             }
