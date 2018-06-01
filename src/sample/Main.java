@@ -23,7 +23,7 @@ public class Main extends Application {
     private Group titleGroup = new Group();
     private Group pieceGroup = new Group();
 
-    private PieceType turn = PieceType.RED;
+    private PieceType turn = PieceType.WHITE;
 
     private Parent createContent() {
         Pane root = new Pane();
@@ -140,9 +140,6 @@ public class Main extends Application {
 
     private MoveResult tryMove(Piece piece, int newX, int newY, PieceType turn, MoveType previousMove) {
 
-
-
-
             if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0) {
                 return new MoveResult(MoveType.NONE);
             }
@@ -198,7 +195,7 @@ public class Main extends Application {
                 case NONE:
                     piece.abortMove();
                     piece.setPrevMove(MoveType.NONE);
-                    
+
                     //changeTurn();
                     //turn = PieceType.other(piece.getType());
                     break;
