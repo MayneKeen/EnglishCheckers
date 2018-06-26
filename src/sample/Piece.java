@@ -11,13 +11,19 @@ public class Piece extends StackPane {
 
     private boolean isKing;
     private MoveType prevMove;
+    public boolean canKill;
+
+
 
     public void setPrevMove(MoveType prevMove) {
         this.prevMove = prevMove;
     }
+
     public MoveType getPrevMove() {
         return prevMove;
     }
+
+
 
 
     public void setKing() {
@@ -41,6 +47,7 @@ public class Piece extends StackPane {
     private PieceType type;
 
     private double mouseX, mouseY;
+
     private double oldX, oldY;
 
     public double getOldX() {
@@ -56,6 +63,7 @@ public class Piece extends StackPane {
     }
 
     public Piece(PieceType type,int x, int y) {
+
         this.type = type;
 
         move(x, y);
@@ -96,12 +104,6 @@ public class Piece extends StackPane {
             getChildren().add(kingEllipse);
         }
 
-
-
-
-
-
-
         setOnMousePressed( e -> {
             mouseX = e.getSceneX();
             mouseY = e.getSceneY();
@@ -111,9 +113,16 @@ public class Piece extends StackPane {
             relocate(e.getSceneX() - mouseX + oldX,
                     e.getSceneY() - mouseY + oldY);
         });
+
+
+
+
+
+
     }
 
-    public void move( int x, int y) {
+    public void move(int x, int y) {
+
         oldX = x * titleSize;
         oldY = y * titleSize;
         relocate(oldX, oldY);

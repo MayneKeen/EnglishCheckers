@@ -10,6 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Main extends Application {
 
@@ -20,10 +23,56 @@ public class Main extends Application {
     private Title[][] board = new Title[width][height];
 
 
+    private boolean mustKill = false;
+    List<Piece> killerPieces = new ArrayList<>();
+
     private Group titleGroup = new Group();
     private Group pieceGroup = new Group();
 
     private PieceType turn = PieceType.WHITE;
+
+    private void canKillUpdater() {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (board[i][j].hasPiece()) {
+                    Piece piece = board[i][j].getPiece();
+                        if ((tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
+                                - 2).getType() == MoveType.KILL) ||
+                                (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
+                                        + 2).getType() == MoveType.KILL) ||
+                                (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
+                                        - 2).getType() == MoveType.KILL) ||
+                                (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
+                                        + 2).getType() == MoveType.KILL))
+                            piece.canKill = true;
+                        else
+                            piece.canKill = false;
+                    }
+            }
+        }
+    }
+
+
+    private void checkKillStreak() {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (board[i][j].hasPiece()) {
+                    Piece piece = board[i][j].getPiece();
+                    if (piece != null) {
+                        if (piece.canKill) {
+                            mustKill = true;
+                            killerPieces.add(piece);
+                        }
+                        else if(!piece.canKill && killerPieces.contains(piece))
+                            killerPieces.remove(piece);
+                        if(killerPieces.isEmpty())
+                            mustKill = false;
+                    }
+                }
+            }
+        }
+    }
+
 
     private Parent createContent() {
         Pane root = new Pane();
@@ -82,7 +131,6 @@ public class Main extends Application {
     }
 
     private String winnerColor() {
-
         boolean hasRedPieces = false;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -128,19 +176,24 @@ public class Main extends Application {
 
     private void changeTurn() {
         turn = PieceType.other(turn);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        canKillUpdater();
+        checkKillStreak();
+        /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
         alert.setTitle("Next turn");
         alert.setHeaderText(null);
         alert.setContentText("Now it's the time for " + turn + " player's turn" );
         alert.showAndWait();
+        */
     }
 
 
 
-    private MoveResult tryMove(Piece piece, int newX, int newY, PieceType turn, MoveType previousMove) {
+    private MoveResult tryMove(Piece piece, int newX, int newY) {
 
-            if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0) {
+        try {
+            if ((board[newX][newY].hasPiece() || (newX + newY) % 2 == 0) ||
+                    (mustKill && !killerPieces.contains(piece))) {
                 return new MoveResult(MoveType.NONE);
             }
             int x0 = toBoard(piece.getOldX());
@@ -148,26 +201,35 @@ public class Main extends Application {
 
             if (Math.abs(newX - x0) == 1 && newY - y0 == piece.getType().moveDir ||
                     (Math.abs(newX - x0) == 1 && piece.isKing())) {
-                if(piece.getType() == turn)
-                    return new MoveResult(MoveType.NORMAL);
+                if (piece.getType() == turn)
+                    if(!mustKill)
+                        return new MoveResult(MoveType.NORMAL);
+                else return new MoveResult(MoveType.NONE);
             } else if (Math.abs(newX - x0) == 2 && newY - y0 == piece.getType().moveDir * 2 ||
                     (Math.abs(newX - x0) == 2 && piece.isKing())) {
                 int x1 = x0 + (newX - x0) / 2;
                 int y1 = y0 + (newY - y0) / 2;
 
                 if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    if (piece.getType() == turn || previousMove == MoveType.KILL)
+                    if (piece.getType() == turn)
                         return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
                 }
             }
 
-        return new MoveResult(MoveType.NONE);
+            return new MoveResult(MoveType.NONE);
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            return new MoveResult(MoveType.NONE);
+        }
+        catch (Exception e) {
+            System.out.println(e.toString() + e.getStackTrace());
+            return new MoveResult(MoveType.NONE);
+        }
     }
 
     private int toBoard(double pixel) {
         return (int)(pixel+titleSize / 2)/titleSize;
     }
-
 
     @Override
     public void start(Stage primaryStage){
@@ -181,11 +243,12 @@ public class Main extends Application {
 
     private Piece makePiece(PieceType type, int x, int y) {
         Piece piece = new Piece(type, x, y);
+
         piece.setOnMouseReleased(e -> {
             int newX = toBoard(piece.getLayoutX());
             int newY = toBoard(piece.getLayoutY());
 
-            MoveResult result = tryMove(piece, newX, newY, turn, piece.getPrevMove());
+            MoveResult result = tryMove(piece, newX, newY);
 
             int x0 = toBoard(piece.getOldX());
             int y0 = toBoard(piece.getOldY());
@@ -204,7 +267,11 @@ public class Main extends Application {
                     piece.move(newX, newY);
                     board[x0][y0].setPiece(null);
                     board[newX][newY].setPiece(piece);
-                    if(kingCondition(piece)) {
+
+                    canKillUpdater();
+                    checkKillStreak();
+
+                    if (kingCondition(piece)) {
                         piece.setKing();
                     }
                     piece.setPrevMove(MoveType.NORMAL);
@@ -221,6 +288,9 @@ public class Main extends Application {
                     board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                     pieceGroup.getChildren().remove(otherPiece);
 
+                    canKillUpdater();
+                    checkKillStreak();
+
                     if(kingCondition(piece)) {
                         piece.setKing();
                     }
@@ -229,12 +299,16 @@ public class Main extends Application {
                         winner();
                     }
                     piece.setPrevMove(MoveType.KILL);
-                    changeTurn();
-                    //turn = PieceType.other(piece.getType());
+                    if(!piece.canKill)
+                        changeTurn();
 
                     break;
             }
         });
+
+
+
+
         return piece;
     }
 
@@ -242,12 +316,8 @@ public class Main extends Application {
 
 
 
-
-
-
     public static void main(String[] args)
     {
-
         launch(args);
     }
 }
