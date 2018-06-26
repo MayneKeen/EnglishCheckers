@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.javafx.collections.ElementObservableListDecorator;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -11,11 +10,12 @@ public class Piece extends StackPane {
 
     private boolean isKing;
     private MoveType prevMove;
-    public boolean canKill;
+
+    boolean canKill;
 
 
 
-    public void setPrevMove(MoveType prevMove) {
+    void setPrevMove(MoveType prevMove) {
         this.prevMove = prevMove;
     }
 
@@ -26,7 +26,7 @@ public class Piece extends StackPane {
 
 
 
-    public void setKing() {
+    void setKing() {
         isKing = true;
         Ellipse kingEllipse = new Ellipse(titleSize * 0.03125, titleSize * 0.026);
 
@@ -40,7 +40,7 @@ public class Piece extends StackPane {
         getChildren().addAll(kingEllipse);
     }
 
-    public boolean isKing() {
+    boolean isKing() {
         return isKing;
     }
 
@@ -50,19 +50,19 @@ public class Piece extends StackPane {
 
     private double oldX, oldY;
 
-    public double getOldX() {
+    double getOldX() {
         return oldX;
     }
 
-    public double getOldY() {
+    double getOldY() {
         return oldY;
     }
 
-    public PieceType getType() {
+    PieceType getType() {
         return type;
     }
 
-    public Piece(PieceType type,int x, int y) {
+    Piece(PieceType type, int x, int y) {
 
         this.type = type;
 
@@ -121,14 +121,14 @@ public class Piece extends StackPane {
 
     }
 
-    public void move(int x, int y) {
+    void move(int x, int y) {
 
         oldX = x * titleSize;
         oldY = y * titleSize;
         relocate(oldX, oldY);
     }
 
-    public void abortMove() {
+    void abortMove() {
         relocate(oldX, oldY);
     }
 

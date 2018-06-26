@@ -1,26 +1,25 @@
 package sample;
 
-import java.awt.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 
-public class Title extends Rectangle {
+class Title extends Rectangle {
 
     private Piece piece;
 
-    public Piece getPiece() {
+    Piece getPiece() {
         return piece;
     }
 
-    public boolean hasPiece() {
+    boolean hasPiece() {
         return piece!=null;
     }
 
-    public void setPiece(Piece piece) {
+    void setPiece(Piece piece) {
         this.piece = piece;
     }
 
-    public Title(boolean light, int x, int y){
+    Title(boolean light, int x, int y){
         setWidth(Main.titleSize);
         setHeight(Main.titleSize);
 
