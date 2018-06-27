@@ -40,242 +40,163 @@ public class Main extends Application {
                     int x = toBoard(piece.getOldX());
                     int y = toBoard(piece.getOldY());
 
-                    MoveResult first = (tryMove(piece, x - 2, y - 2));
-                    MoveResult second = (tryMove(piece, x - 2, y + 2));
-                    MoveResult third = (tryMove(piece, x + 2, y - 2));
-                    MoveResult fourth = (tryMove(piece, x + 2, y + 2));
+//                    MoveResult first = (tryMove(piece, x - 2, y - 2));
 
-                    piece.canKill = (first.getType() == MoveType.KILL) ||
+//                    MoveResult second = (tryMove(piece, x - 2, y + 2));
+
+//                    MoveResult third = (tryMove(piece, x + 2, y - 2));
+
+//                    MoveResult fourth = (tryMove(piece, x + 2, y + 2));
+
+                    /*piece.canKill = (first.getType() == MoveType.KILL) ||
                             (second.getType() == MoveType.KILL) ||
                             (third.getType() == MoveType.KILL) ||
                             (fourth.getType() == MoveType.KILL);
-
-
-
-
-
-/*
-                    if(x == 0 || x == 1 || x == 6 || x == 7 || y == 0 || y == 1 || y == 6 || y == 7) {
-                        switch (x) {
-                            case 0: {
-                                switch (y) {
-                                    case 0: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 1: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-
-                                    case 6: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 7: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                            case 1: {
-                                switch (y) {
-                                    case 0: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 1: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-
-                                    case 6: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 7: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-
-                            case 6: {
-                                switch (y) {
-                                    case 0: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 1: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-
-                                    case 6: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 7: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-
-                            case 7: {
-                                switch (y) {
-                                    case 0: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 1: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                + 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-
-                                    case 6: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                    case 7: {
-                                        if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                                - 2).getType() == MoveType.KILL)
-                                            piece.canKill = true;
-                                        else
-                                            piece.canKill = false;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                        }
-
-                    }
-                    else {
-                        if ((tryMove(piece, x - 2, y - 2).getType() == MoveType.KILL) ||
-                                (tryMove(piece, x - 2, y + 2).getType() == MoveType.KILL) ||
-                                (tryMove(piece, x + 2, y - 2).getType() == MoveType.KILL) ||
-                                (tryMove(piece, x + 2, y + 2).getType() == MoveType.KILL))
-                            piece.canKill = true;
-                        else
-                            piece.canKill = false;
-                    }
-
-
-
-
-
-
-
-
-
-
-
-                    /*if(x == 0 || y == 0 || x == 7 || y == 7) {
-                        if (x == 0 && y == 0) {
-                            if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                    + 2).getType() == MoveType.KILL)
-                                piece.canKill = true;
-                            else
-                                piece.canKill = false;
-                        }
-                        if (x == 7 && y == 7) {
-                            if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                    - 2).getType() == MoveType.KILL)
-                                piece.canKill = true;
-                            else
-                                piece.canKill = false;
-                        }
-                        if (x == 7 && y == 0) {
-                            if (tryMove(piece, toBoard(piece.getOldX()) - 2, toBoard(piece.getOldY())
-                                    + 2).getType() == MoveType.KILL)
-                                piece.canKill = true;
-                            else
-                                piece.canKill = false;
-                        }
-
-                        if (x == 0 && y == 7) {
-                            if (tryMove(piece, toBoard(piece.getOldX()) + 2, toBoard(piece.getOldY())
-                                    - 2).getType() == MoveType.KILL)
-                                piece.canKill = true;
-                            else
-                                piece.canKill = false;
-                        }
-                    }
-                    else {
-                        if ((tryMove(piece, x - 2, y - 2).getType() == MoveType.KILL) ||
-                                (tryMove(piece, x - 2, y + 2).getType() == MoveType.KILL) ||
-                                (tryMove(piece, x + 2, y - 2).getType() == MoveType.KILL) ||
-                                (tryMove(piece, x + 2, y + 2).getType() == MoveType.KILL))
-                            piece.canKill = true;
-                        else
-                            piece.canKill = false;
-                    }
-
 */
+
+
+
+                    switch (x) {
+                        case 0: {
+                            switch (y) {
+                                case 0: {
+                                    piece.canKill = tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 1: {
+                                    piece.canKill = tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 6: {
+                                    piece.canKill = tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 7: {
+                                    piece.canKill = tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                default: {
+                                    piece.canKill = (tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+
+                        case 1: {
+                            switch (y) {
+                                case 0: {
+                                    piece.canKill = tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 1: {
+                                    piece.canKill = tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 6: {
+                                    piece.canKill = tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 7: {
+                                    piece.canKill = tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                default: {
+                                    piece.canKill = (tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+
+                        case 6: {
+                            switch (y) {
+                                case 0: {
+                                    piece.canKill = tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 1: {
+                                    piece.canKill = tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 6: {
+                                    piece.canKill = tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 7: {
+                                    piece.canKill = tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                default: {
+                                    piece.canKill = (tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+
+                        case 7: {
+                            switch (y) {
+                                case 0: {
+                                    piece.canKill = tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 1: {
+                                    piece.canKill = tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 6: {
+                                    piece.canKill = tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                case 7: {
+                                    piece.canKill = tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL;
+                                    break;
+                                }
+                                default: {
+                                    piece.canKill = (tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        default: {
+                            switch (y) {
+                                case 0: {
+                                    piece.canKill = (tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                                case 1: {
+                                    piece.canKill = (tryMove(piece, x - 2, y + 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x + 2, y + 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                                case 6: {
+                                    piece.canKill = (tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                                case 7: {
+                                    piece.canKill = (tryMove(piece, x - 2, y - 2).getType()==MoveType.KILL ||
+                                            tryMove(piece, x + 2, y - 2).getType()==MoveType.KILL);
+                                    break;
+                                }
+                                default: {
+                                    piece.canKill = (tryMove(piece, x - 2, y - 2).getType() == MoveType.KILL) ||
+                                            (tryMove(piece, x - 2, y + 2).getType() == MoveType.KILL) ||
+                                            (tryMove(piece, x + 2, y - 2).getType() == MoveType.KILL) ||
+                                            (tryMove(piece, x + 2, y + 2).getType() == MoveType.KILL);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -441,6 +362,7 @@ public class Main extends Application {
             return new MoveResult(MoveType.NONE);
         }
         catch (ArrayIndexOutOfBoundsException e){
+            e.printStackTrace(System.out);
             return new MoveResult(MoveType.NONE);
         }
 
